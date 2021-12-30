@@ -48,6 +48,7 @@ class AWSParameterStore(AWSSecretLoader):
 
         # if the prefix contains forward slashes treat the last token as the key name
         do_split = "/" in self.aws_sstore
+        self.logger.debug("do_split? %s", do_split)
 
         try:
             # ensure the http client doesn't write our sensitive payload to the logger
@@ -59,10 +60,12 @@ class AWSParameterStore(AWSSecretLoader):
                 "MaxResults": 10,
                 "WithDecryption": True,
             }
+            self.logger.debug("ssm args: %s", args)
 
             # loop through next page tokens, page size caps at 10
             while True:
                 resp = aws_client.get_parameters_by_path(**args)
+                self.logger.debug("resp: %s", resp)
                 for param in resp["Parameters"] or []:
                     # remove the prefix
                     # we want /path/to/DB_PASSWORD to populate os.env.DB_PASSWORD
