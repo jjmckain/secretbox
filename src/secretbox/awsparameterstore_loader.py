@@ -52,7 +52,7 @@ class AWSParameterStore(AWSSecretLoader):
 
         try:
             # ensure the http client doesn't write our sensitive payload to the logger
-            logging.getLogger("botocore.parsers").addFilter(self.secrets_filter)
+            # logging.getLogger("botocore.parsers").addFilter(self.secrets_filter)
 
             args = {
                 "Path": self.aws_sstore,
@@ -82,9 +82,9 @@ class AWSParameterStore(AWSSecretLoader):
             self.logger.error("Error retrieving from parameter store: %s", err)
             return False
 
-        finally:
-            # remove our logging filter
-            logging.getLogger("botocore.parsers").removeFilter(self.secrets_filter)
+        # finally:
+        # remove our logging filter
+        # logging.getLogger("botocore.parsers").removeFilter(self.secrets_filter)
 
         self.logger.info(
             "loaded %d parameters matching %s", len(self.loaded_values), self.aws_sstore
